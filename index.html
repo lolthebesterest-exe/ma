@@ -1,23 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>public-template-face</title>
+    <meta charset="UTF-8">
+    <title>Face AR - Beak on Eyes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- MindAR Face Tracking -->
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar@1.2.5/dist/mindar-face.prod.js"></script>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+
+    <style>
+      body { margin: 0; overflow: hidden; background: #000; }
+      #startBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 15px 30px;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+    </style>
   </head>
 
   <body>
+    <!-- Start Button -->
+    <button id="startBtn">Start AR</button>
+
     <a-scene
+      id="ar-scene"
       mindar-face
       embedded
       color-space="sRGB"
       renderer="colorManagement: true; physicallyCorrectLights"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
+      style="display:none;"
     >
       <!-- Assets -->
       <a-assets>
@@ -28,14 +48,10 @@
         <a-asset-item id="tail" src="tail.gltf"></a-asset-item>
       </a-assets>
 
-      <!-- Camera (controlled by MindAR) -->
-      <a-camera
-        active="false"
-        position="0 0 0"
-        look-controls-enabled="false">
-      </a-camera>
+      <!-- Camera -->
+      <a-camera active="false" position="0 0 0" look-controls-enabled="false"></a-camera>
 
-      <!-- Face image overlay -->
+      <!-- Face overlay image -->
       <a-entity mindar-face-target="anchorIndex: 1">
         <a-image
           src="#Griffles"
@@ -89,6 +105,22 @@
       </a-entity>
 
     </a-scene>
+
+    <script>
+      const startBtn = document.getElementById("startBtn");
+      const scene = document.getElementById("ar-scene");
+
+      startBtn.addEventListener("click", async () => {
+        // Hide the start button
+        startBtn.style.display = "none";
+        scene.style.display = "block";
+
+        // Start MindAR
+        const mindarSystem = scene.systems["mindar-face-system"];
+        await mindarSystem.start();
+      });
+    </script>
   </body>
 </html>
+
 
